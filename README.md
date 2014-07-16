@@ -41,6 +41,10 @@ Usage
 The usage is trivial. To retrieve the number of syllables of a word,
 use the `count` static method:
 
+    import eu.crydee.syllablecounter.SyllableCounter;
+
+    ...
+    
     int myCount = SyllableCounter.count("facility");
     // myCount holds 4
     
