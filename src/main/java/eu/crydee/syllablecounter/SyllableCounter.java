@@ -32,24 +32,27 @@ import java.util.stream.Collectors;
  * Fallback syllable counter.
  *
  * Based on the work of Thomas Jakobsen (thomj05@student.uia.no) and Thomas
- * Skardal (thomas04@student.uia.no) for the NLTK readability plugin.
+ * Skardal (thomas04@student.uia.no) for the
+ * <a href="https://github.com/nltk/nltk_contrib/blob/master/nltk_contrib/readability/syllables_en.py">
+ * NLTK readability plugin
+ * </a>.
  *
- * https://code.google.com/p/nltk/source/browse/trunk/nltk_contrib/nltk_contrib/readability/syllables_en.py
+ *
  *
  * Their work is itself based on the algorithm in Greg Fast's perl module
  * Lingua::EN::Syllable.
  */
 public class SyllableCounter {
 
-    private static int cacheSize;
+    private int cacheSize;
 
-    private final static Map<String, Integer> exceptions, cache;
+    private final Map<String, Integer> exceptions, cache;
 
-    private final static List<Pattern> subSyl, addSyl;
+    private final List<Pattern> subSyl, addSyl;
 
-    private final static Set<Character> vowels;
+    private final Set<Character> vowels;
 
-    static {
+    public SyllableCounter() {
         cacheSize = 20000;
 
         cache = new HashMap<>();
@@ -57,7 +60,7 @@ public class SyllableCounter {
         exceptions = new HashMap<>();
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                SyllableCounter.class.getResourceAsStream("/eu/crydee/syllablecounter/english-exceptions.txt")))) {
+                this.getClass().getResourceAsStream("/eu/crydee/syllablecounter/english-exceptions.txt")))) {
             String line;
             while ((line = br.readLine()) != null) {
                 line = line.trim();
@@ -108,19 +111,19 @@ public class SyllableCounter {
      * @param cacheSize the new size of the cache. Negative to disable caching.
      * Won't clean a cache that was bigger than the new size before.
      */
-    public static void setCacheSize(int cacheSize) {
-        SyllableCounter.cacheSize = cacheSize;
+    public void setCacheSize(int cacheSize) {
+        this.cacheSize = cacheSize;
     }
 
     /**
-     * Only entry point of this library. Method to count the number of syllables
-     * of a word using a fallback method as documented at the class level of
-     * this documentation.
+     * Main point of this library. Method to count the number of syllables of a
+     * word using a fallback method as documented at the class level of this
+     * documentation.
      *
      * @param word the word you want to count the syllables of.
      * @return the number of syllables of the word.
      */
-    public static int count(String word) {
+    public int count(String word) {
         if (word == null) {
             return 0;
         } else if (word.length() == 1) {
