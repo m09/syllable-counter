@@ -24,11 +24,13 @@ Installation
 With Maven, you can just add the following to the `dependencies`
 section of your `pom.xml`:
 
+```xml
     <dependency>
       <groupId>eu.crydee</groupId>
       <artifactId>syllable-counter</artifactId>
       <version>2.0.0</version>
     </dependency>
+```
 
 If you do not use maven, you can still [download][dl] the jar from
 Maven Central and use it as appropriate.
