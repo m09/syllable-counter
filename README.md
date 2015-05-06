@@ -1,4 +1,4 @@
-Syllable Counter [![Build Status](https://travis-ci.org/m09/syllable-counter.svg?branch=master)](https://travis-ci.org/m09/syllable-counter)
+Syllable Counter [![Build Status](https://travis-ci.org/m09/syllable-counter.svg?branch=master)](https://travis-ci.org/m09/syllable-counter) [![Maven Central version](https://img.shields.io/maven-central/v/eu.crydee/syllable-counter.svg)](http://search.maven.org/#search|ga|1|a%3A%22syllable-counter%22)
 ===
 
 Uses a fallback method—based on the [NLTK readability plugin][nltk] by
