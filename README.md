@@ -1,5 +1,5 @@
-Syllable Counter
-================
+Syllable Counter [![Build Status](https://travis-ci.org/m09/syllable-counter.svg?branch=master)](https://travis-ci.org/m09/syllable-counter)
+===
 
 Uses a fallback method—based on the [NLTK readability plugin][nltk] by
 Thomas Jakobsen <thomj05@student.uia.no> and Thomas Skardal
