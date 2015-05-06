@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.UUID;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -42,8 +43,8 @@ public class SyllableCounterTest {
         System.out.println("setCacheSize");
         int cacheSize = 300;
         SyllableCounter sc = new SyllableCounter(cacheSize);
-        IntStream.range(0, cacheSize * 2)
-                .forEach(i -> sc.count(UUID.randomUUID().toString()));
+        Stream.generate(() -> UUID.randomUUID().toString()).limit(cacheSize * 2)
+                .forEach(s -> sc.count(s));
         assertEquals(cacheSize, sc.getCurrentCacheSize());
     }
 
@@ -51,9 +52,18 @@ public class SyllableCounterTest {
      * Test of count method, of class SyllableCounter.
      */
     @Test
-    public void testCount() {
-        System.out.println("count");
+    public void testCountFromTestFile() {
+        System.out.println("count from test file");
         testFromFile(testFilepath);
+    }
+
+    /**
+     * Test of count method, of class SyllableCounter.
+     */
+    @Test(expected = NullPointerException.class)
+    public void testCountNull() {
+        System.out.println("count null");
+        new SyllableCounter().count(null);
     }
 
     /**
