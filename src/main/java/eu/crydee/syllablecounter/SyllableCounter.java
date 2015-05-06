@@ -44,7 +44,10 @@ import java.util.stream.Collectors;
  */
 public class SyllableCounter {
 
-    private int cacheSize;
+    private final static String exceptionsFilepath
+            = "/eu/crydee/syllablecounter/english-exceptions.txt";
+
+    private int maxCacheSize;
 
     private final Map<String, Integer> exceptions, cache;
 
@@ -53,19 +56,23 @@ public class SyllableCounter {
     private final Set<Character> vowels;
 
     public SyllableCounter() {
-        cacheSize = 20000;
+        this(0);
+    }
+
+    public SyllableCounter(int maxCacheSize) {
+        this.maxCacheSize = maxCacheSize;
 
         cache = new HashMap<>();
 
         exceptions = new HashMap<>();
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                this.getClass().getResourceAsStream("/eu/crydee/syllablecounter/english-exceptions.txt")))) {
+                getClass().getResourceAsStream(exceptionsFilepath)))) {
             String line;
             while ((line = br.readLine()) != null) {
                 line = line.trim();
                 if (!line.isEmpty() && !line.startsWith("#")) {
-                    String[] fields = line.split("	");
+                    String[] fields = line.split(" ");
                     if (fields.length != 2) {
                         System.err.println("couldn't parse the exceptions "
                                 + "file. Didn't find 2 fields in one of the "
@@ -107,12 +114,24 @@ public class SyllableCounter {
     }
 
     /**
+     * Setter for the maximum cash size.
      *
-     * @param cacheSize the new size of the cache. Negative to disable caching.
-     * Won't clean a cache that was bigger than the new size before.
+     * @param maxCacheSize the new maximum size of the cache. Negative to
+     * disable caching. Won't clean a cache that was bigger than the new size
+     * before.
      */
-    public void setCacheSize(int cacheSize) {
-        this.cacheSize = cacheSize;
+    public void setMaxCacheSize(int maxCacheSize) {
+        this.maxCacheSize = maxCacheSize;
+    }
+
+    /**
+     * Getter for the current cash size. Here mainly to make the cache behavior
+     * testable.
+     *
+     * @return cacheSize the current size of the cache.
+     */
+    public int getCurrentCacheSize() {
+        return cache.size();
     }
 
     /**
@@ -136,7 +155,7 @@ public class SyllableCounter {
             return exceptions.get(word);
         }
 
-        if (cacheSize > 0 && cache.containsKey(word)) {
+        if (maxCacheSize > 0 && cache.containsKey(word)) {
             return cache.get(word);
         }
 
@@ -164,7 +183,7 @@ public class SyllableCounter {
             }
         }
 
-        if (cacheSize > 0 && cache.size() < cacheSize) {
+        if (maxCacheSize > 0 && cache.size() < maxCacheSize) {
             cache.put(word, count);
         }
 
