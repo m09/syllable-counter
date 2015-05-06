@@ -53,7 +53,7 @@ int myCount = sc.count("facility");
 // myCount holds 4
 ```
 
-By default, the syllable counter doesn't words. You can modify this
-behavior with the `setCacheSize` method. A positive value will set a
-different upper limit while a negative value will let the cache in its
-disabled state.
+By default, the syllable counter doesn't cache words. You can modify
+this behavior with the `setCacheSize` method. A positive value will
+set a different upper limit while a negative value will let the cache
+in its disabled state.
