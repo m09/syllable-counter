@@ -19,7 +19,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.UUID;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -42,10 +41,29 @@ public class SyllableCounterTest {
     public void testSetCacheSize() {
         System.out.println("setCacheSize");
         int cacheSize = 300;
-        SyllableCounter sc = new SyllableCounter(cacheSize);
+        testCacheSizeHelper(new SyllableCounter(cacheSize), cacheSize);
+        SyllableCounter sc = new SyllableCounter();
+        sc.setMaxCacheSize(cacheSize);
+        testCacheSizeHelper(sc, cacheSize);
+    }
+
+    private void testCacheSizeHelper(SyllableCounter sc, int cacheSize) {
         Stream.generate(() -> UUID.randomUUID().toString()).limit(cacheSize * 2)
                 .forEach(s -> sc.count(s));
         assertEquals(cacheSize, sc.getCurrentCacheSize());
+    }
+
+    /**
+     * Test of the cache. Should not be able to fail directly but will go
+     * through some lines of code if it works, which should show up in coverage
+     * reports.
+     */
+    @Test
+    public void testCache() {
+        System.out.println("cache");
+        SyllableCounter sc = new SyllableCounter(1);
+        sc.count("hai");
+        sc.count("hai");
     }
 
     /**
