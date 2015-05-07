@@ -1,5 +1,6 @@
-Syllable Counter [![Build Status](https://travis-ci.org/m09/syllable-counter.svg?branch=master)](https://travis-ci.org/m09/syllable-counter) [![Maven Central version](https://img.shields.io/maven-central/v/eu.crydee/syllable-counter.svg)](http://search.maven.org/#search|ga|1|a%3A%22syllable-counter%22) [![Coverage Status](https://coveralls.io/repos/m09/syllable-counter/badge.svg?branch=master)](https://coveralls.io/r/m09/syllable-counter?branch=master)
+Syllable Counter
 ===
+[![Build Status](https://travis-ci.org/m09/syllable-counter.svg?branch=master)](https://travis-ci.org/m09/syllable-counter) [![Maven Central version](https://img.shields.io/maven-central/v/eu.crydee/syllable-counter.svg)](http://search.maven.org/#search|ga|1|a%3A%22syllable-counter%22) [![Coverage Status](https://coveralls.io/repos/m09/syllable-counter/badge.svg?branch=master)](https://coveralls.io/r/m09/syllable-counter?branch=master) [![Dependency Status](https://www.versioneye.com/java/eu.crydee:syllable-counter/2.0.0/badge.svg)](https://www.versioneye.com/java/eu.crydee:syllable-counter/2.0.0)
 
 Uses a fallback method—based on the [NLTK readability plugin][nltk] by
 Thomas Jakobsen <thomj05@student.uia.no> and Thomas Skardal
