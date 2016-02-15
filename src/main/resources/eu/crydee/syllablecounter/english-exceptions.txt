@@ -10,6 +10,7 @@
 1 peeped
 1 sheered
 1 st
+1 queue
 2 60
 2 bepatched
 2 capered
@@ -44,6 +45,9 @@
 2 trespassed
 2 truckle
 2 unstained
+2 therefore
+3 businesses
+3 bottleful
 3 discoloured
 3 disinterred
 3 hemispheres
@@ -52,6 +56,7 @@
 3 shamefully
 3 unexpressed
 3 veriest
+3 wyoming
 4 etc
 4 sailmaker
 4 satiated
