@@ -88,20 +88,20 @@ public class SyllableCounter {
             ex.printStackTrace(System.err);
         }
 
-        subSyl = Arrays.asList("cial", "tia", "cius", "cious", "gui", "ion",
-                "iou", "sia$", ".ely$").stream()
+        subSyl = Arrays.asList("cial", "cian", "tia", "cius", "cious", "gui", "ion",
+                "iou", "sia$", ".ely$", "ves$", "geous$", "gious$", "[^aeiou]eful$", ".red$").stream()
                 .map(Pattern::compile)
                 .collect(Collectors.toList());
 
         addSyl = Arrays.asList("ia", "riet", "dien", "iu", "io", "ii",
-                "[aeiouy]bl$", "mbl$",
+                "[aeiouy]bl$", "mbl$", "tl$", "sl$",
                 "[aeiou]{3}",
                 "^mc", "ism$",
                 "(.)(?!\\1)([aeiouy])\\2l$",
                 "[^l]llien",
                 "^coad.", "^coag.", "^coal.", "^coax.",
                 "(.)(?!\\1)[gq]ua(.)(?!\\2)[aeiou]",
-                "dnt$").stream()
+                "dnt$", "thm$", "ier$", "iest$", "[^aeiou][aeiouy]ing$").stream()
                 .map(Pattern::compile)
                 .collect(Collectors.toList());
         vowels = new HashSet<>();
@@ -145,6 +145,8 @@ public class SyllableCounter {
     public int count(String word) {
         if (word == null) {
             throw new NullPointerException("the word parameter was null.");
+        } else if (word.length() == 0) {
+            return 0;
         } else if (word.length() == 1) {
             return 1;
         }
@@ -187,6 +189,6 @@ public class SyllableCounter {
             cache.put(word, count);
         }
 
-        return count;
+        return count > 0 ? count : 1;
     }
 }
