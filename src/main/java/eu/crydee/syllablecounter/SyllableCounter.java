@@ -15,18 +15,19 @@
  */
 package eu.crydee.syllablecounter;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Fallback syllable counter.
@@ -44,94 +45,50 @@ import java.util.stream.Collectors;
  */
 public class SyllableCounter {
 
-    private final static String exceptionsFilepath
-            = "/eu/crydee/syllablecounter/english-exceptions.txt";
+    private final static String EXCEPTIONS_PATH
+            = "/eu/crydee/syllablecounter/english-exceptions.txt",
+            SUBSYL_PATH = "/eu/crydee/syllablecounter/english-subsyls.txt",
+            ADDSYL_PATH = "/eu/crydee/syllablecounter/english-addsyls.txt";
 
-    private int maxCacheSize;
+    private final Map<String, Integer> exceptions;
 
-    private final Map<String, Integer> exceptions, cache;
-
-    private final List<Pattern> subSyl, addSyl;
+    private final Set<Pattern> subSyls, addSyls;
 
     private final Set<Character> vowels;
 
-    public SyllableCounter() {
-        this(0);
+    private Stream<String> getRessourceLines(String filepath) {
+        try {
+            return Files.lines(
+                    Paths.get(getClass().getResource(filepath).toURI()),
+                    StandardCharsets.UTF_8);
+        } catch (URISyntaxException | IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
-    public SyllableCounter(int maxCacheSize) {
-        this.maxCacheSize = maxCacheSize;
-
-        cache = new HashMap<>();
-
-        exceptions = new HashMap<>();
-
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                getClass().getResourceAsStream(exceptionsFilepath)))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                line = line.trim();
-                if (!line.isEmpty() && !line.startsWith("#")) {
-                    String[] fields = line.split(" ");
+    public SyllableCounter() {
+        exceptions = getRessourceLines(EXCEPTIONS_PATH)
+                .filter(line -> !line.isEmpty() && !line.startsWith("#"))
+                .map(line -> line.split(" "))
+                .peek(fields -> {
                     if (fields.length != 2) {
                         System.err.println("couldn't parse the exceptions "
-                                + "file. Didn't find 2 fields in one of the "
-                                + "lines.");
+                                + "file. Didn't find 2 fields in one of "
+                                + "the lines.");
                     }
-                    int nSyllables = Integer.parseInt(fields[0]);
-                    String word = fields[1];
-                    exceptions.put(word, nSyllables);
-                }
-            }
-        } catch (IOException ex) {
-            System.err.println("couldn't open the exceptions file.");
-            ex.printStackTrace(System.err);
-        }
-
-        subSyl = Arrays.asList("cial", "cian", "tia", "cius", "cious", "gui", "ion",
-                "iou", "sia$", ".ely$", "ves$", "geous$", "gious$", "[^aeiou]eful$", ".red$").stream()
+                })
+                .collect(Collectors.toMap(
+                        fields -> fields[1],
+                        fields -> Integer.parseInt(fields[0])));
+        addSyls = getRessourceLines(ADDSYL_PATH)
+                .filter(line -> !line.isEmpty() && !line.startsWith("#"))
                 .map(Pattern::compile)
-                .collect(Collectors.toList());
-
-        addSyl = Arrays.asList("ia", "riet", "dien", "iu", "io", "ii",
-                "[aeiouy]bl$", "mbl$", "tl$", "sl$",
-                "[aeiou]{3}",
-                "^mc", "ism$",
-                "(.)(?!\\1)([aeiouy])\\2l$",
-                "[^l]llien",
-                "^coad.", "^coag.", "^coal.", "^coax.",
-                "(.)(?!\\1)[gq]ua(.)(?!\\2)[aeiou]",
-                "dnt$", "thm$", "ier$", "iest$", "[^aeiou][aeiouy]ing$").stream()
+                .collect(Collectors.toSet());
+        subSyls = getRessourceLines(SUBSYL_PATH)
+                .filter(line -> !line.isEmpty() && !line.startsWith("#"))
                 .map(Pattern::compile)
-                .collect(Collectors.toList());
-        vowels = new HashSet<>();
-        vowels.add('a');
-        vowels.add('e');
-        vowels.add('i');
-        vowels.add('o');
-        vowels.add('u');
-        vowels.add('y');
-    }
-
-    /**
-     * Setter for the maximum cash size.
-     *
-     * @param maxCacheSize the new maximum size of the cache. Negative to
-     * disable caching. Won't clean a cache that was bigger than the new size
-     * before.
-     */
-    public void setMaxCacheSize(int maxCacheSize) {
-        this.maxCacheSize = maxCacheSize;
-    }
-
-    /**
-     * Getter for the current cash size. Here mainly to make the cache behavior
-     * testable.
-     *
-     * @return cacheSize the current size of the cache.
-     */
-    public int getCurrentCacheSize() {
-        return cache.size();
+                .collect(Collectors.toSet());
+        vowels = new HashSet<>(Arrays.asList('a', 'e', 'i', 'o', 'u', 'y'));
     }
 
     /**
@@ -142,7 +99,7 @@ public class SyllableCounter {
      * @param word the word you want to count the syllables of.
      * @return the number of syllables of the word.
      */
-    public int count(String word) {
+    public int count(final String word) {
         if (word == null) {
             throw new NullPointerException("the word parameter was null.");
         } else if (word.length() == 0) {
@@ -151,43 +108,34 @@ public class SyllableCounter {
             return 1;
         }
 
-        word = word.toLowerCase(Locale.ENGLISH);
+        final String lowerCase = word.toLowerCase(Locale.ENGLISH);
 
-        if (exceptions.containsKey(word)) {
-            return exceptions.get(word);
+        if (exceptions.containsKey(lowerCase)) {
+            return exceptions.get(lowerCase);
         }
 
-        if (maxCacheSize > 0 && cache.containsKey(word)) {
-            return cache.get(word);
-        }
-
-        if (word.charAt(word.length() - 1) == 'e') {
-            word = word.substring(0, word.length() - 1);
+        final String prunned;
+        if (lowerCase.charAt(lowerCase.length() - 1) == 'e') {
+            prunned = lowerCase.substring(0, lowerCase.length() - 1);
+        } else {
+            prunned = lowerCase;
         }
 
         int count = 0;
         boolean prevIsVowel = false;
-        for (char c : word.toCharArray()) {
-            boolean isVowel = vowels.contains(c);
+        for (char c : prunned.toCharArray()) {
+            final boolean isVowel = vowels.contains(c);
             if (isVowel && !prevIsVowel) {
                 ++count;
             }
             prevIsVowel = isVowel;
         }
-        for (Pattern pattern : addSyl) {
-            if (pattern.matcher(word).find()) {
-                ++count;
-            }
-        }
-        for (Pattern pattern : subSyl) {
-            if (pattern.matcher(word).find()) {
-                --count;
-            }
-        }
-
-        if (maxCacheSize > 0 && cache.size() < maxCacheSize) {
-            cache.put(word, count);
-        }
+        count += addSyls.stream()
+                .filter(pattern -> pattern.matcher(prunned).find())
+                .count();
+        count -= subSyls.stream()
+                .filter(pattern -> pattern.matcher(prunned).find())
+                .count();
 
         return count > 0 ? count : 1;
     }

@@ -1,0 +1,15 @@
+cial
+cian
+tia
+cius
+cious
+gui
+ion
+iou
+sia$
+.ely$
+ves$
+geous$
+gious$
+[^aeiou]eful$
+.red$

@@ -15,10 +15,11 @@
  */
 package eu.crydee.syllablecounter;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.UUID;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.stream.Stream;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -29,41 +30,19 @@ import static org.junit.Assert.*;
  */
 public class SyllableCounterTest {
 
-    private final static String exceptionsFilepath
+    private final static String EXCEPTIONS_PATH
             = "/eu/crydee/syllablecounter/english-exceptions.txt",
-            testFilepath
+            TEST_PATH
             = "/eu/crydee/syllablecounter/english-test.txt";
 
-    /**
-     * Test of setCacheSize method, of class SyllableCounter.
-     */
-    @Test
-    public void testSetCacheSize() {
-        System.out.println("setCacheSize");
-        int cacheSize = 300;
-        testCacheSizeHelper(new SyllableCounter(cacheSize), cacheSize);
-        SyllableCounter sc = new SyllableCounter();
-        sc.setMaxCacheSize(cacheSize);
-        testCacheSizeHelper(sc, cacheSize);
-    }
-
-    private void testCacheSizeHelper(SyllableCounter sc, int cacheSize) {
-        Stream.generate(() -> UUID.randomUUID().toString()).limit(cacheSize * 2)
-                .forEach(s -> sc.count(s));
-        assertEquals(cacheSize, sc.getCurrentCacheSize());
-    }
-
-    /**
-     * Test of the cache. Should not be able to fail directly but will go
-     * through some lines of code if it works, which should show up in coverage
-     * reports.
-     */
-    @Test
-    public void testCache() {
-        System.out.println("cache");
-        SyllableCounter sc = new SyllableCounter(1);
-        sc.count("hai");
-        sc.count("hai");
+    private Stream<String> getRessourceLines(String filepath) {
+        try {
+            return Files.lines(
+                    Paths.get(getClass().getResource(filepath).toURI()),
+                    StandardCharsets.UTF_8);
+        } catch (URISyntaxException | IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     /**
@@ -72,7 +51,7 @@ public class SyllableCounterTest {
     @Test
     public void testCountFromTestFile() {
         System.out.println("count from test file");
-        testFromFile(testFilepath);
+        testFromFile(TEST_PATH);
     }
 
     /**
@@ -90,31 +69,24 @@ public class SyllableCounterTest {
     @Test
     public void testCountExceptions() {
         System.out.println("count exceptions");
-        testFromFile(exceptionsFilepath);
+        testFromFile(EXCEPTIONS_PATH);
     }
 
     private void testFromFile(String filepath) {
         SyllableCounter sc = new SyllableCounter();
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                getClass().getResourceAsStream(filepath)))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                line = line.trim();
-                if (!line.isEmpty() && !line.startsWith("#")) {
+        getRessourceLines(filepath).filter(line -> !line.isEmpty())
+                .filter(line -> !line.startsWith("#"))
+                .forEach(line -> {
                     String[] fields = line.split(" ");
                     if (fields.length != 2) {
-                        System.err.println("couldn't parse the exceptions "
-                                + "file. Didn't find 2 fields in one of the "
+                        System.err.println(
+                                "couldn't parse " + filepath + ". Didn't "
+                                + "find 2 fields in one of the non-comment "
                                 + "lines.");
                     }
-                    int nSyllables = Integer.parseInt(fields[0]);
-                    String word = fields[1];
-                    int count = sc.count(word);
-                    assertEquals(count, nSyllables);
-                }
-            }
-        } catch (IOException ex) {
-            fail("could not find " + filepath);
-        }
+                    assertEquals(
+                            sc.count(fields[1]),
+                            Integer.parseInt(fields[0]));
+                });
     }
 }

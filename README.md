@@ -29,14 +29,14 @@ section of your `pom.xml`:
     <dependency>
       <groupId>eu.crydee</groupId>
       <artifactId>syllable-counter</artifactId>
-      <version>3.0.0</version>
+      <version>4.0.0</version>
     </dependency>
 ```
 
 If you do not use maven, you can still [download][dl] the jar from
 Maven Central and use it as appropriate.
 
-[dl]: http://search.maven.org/remotecontent?filepath=eu/crydee/syllable-counter/3.0.0/syllable-counter-3.0.0.jar
+[dl]: http://search.maven.org/remotecontent?filepath=eu/crydee/syllable-counter/4.0.0/syllable-counter-4.0.0.jar
 
 Usage
 -----
@@ -53,8 +53,3 @@ SyllableCounter sc = new SyllableCounter();
 int myCount = sc.count("facility");
 // myCount holds 4
 ```
-
-By default, the syllable counter doesn't cache words. You can modify
-this behavior with the `setCacheSize` method. A positive value will
-set a different upper limit while a negative value will let the cache
-in its disabled state.
