@@ -29,14 +29,14 @@ section of your `pom.xml`:
     <dependency>
       <groupId>eu.crydee</groupId>
       <artifactId>syllable-counter</artifactId>
-      <version>4.0.0</version>
+      <version>4.0.1</version>
     </dependency>
 ```
 
 If you do not use maven, you can still [download][dl] the jar from
 Maven Central and use it as appropriate.
 
-[dl]: http://search.maven.org/remotecontent?filepath=eu/crydee/syllable-counter/4.0.0/syllable-counter-4.0.0.jar
+[dl]: http://search.maven.org/remotecontent?filepath=eu/crydee/syllable-counter/4.0.1/syllable-counter-4.0.1.jar
 
 Usage
 -----
