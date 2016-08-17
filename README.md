@@ -10,7 +10,7 @@ by Greg Fast <gdf@imsa.edu>.
 
 Thanks to them for making their work available.
 
-[nltk]: https://code.google.com/p/nltk/source/browse/trunk/nltk_contrib/nltk_contrib/readability/syllables_en.py
+[nltk]: https://github.com/nltk/nltk_contrib/blob/master/nltk_contrib/readability/syllables_en.py
 
 [perl]: http://search.cpan.org/~neilb/Lingua-EN-Syllable-0.26/
 
