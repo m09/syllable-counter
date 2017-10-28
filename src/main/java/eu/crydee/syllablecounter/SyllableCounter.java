@@ -15,11 +15,10 @@
  */
 package eu.crydee.syllablecounter;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
@@ -56,18 +55,22 @@ public class SyllableCounter {
 
     private final Set<Character> vowels;
 
-    private Stream<String> getRessourceLines(String filepath) {
-        try {
-            return Files.lines(
-                    Paths.get(getClass().getResource(filepath).toURI()),
-                    StandardCharsets.UTF_8);
-        } catch (URISyntaxException | IOException ex) {
-            throw new RuntimeException(ex);
+    // Package protected for testing purposes
+    Stream<String> getRessourceLines(Class<?> clazz, String filepath) {
+        try (final BufferedReader fileReader = new BufferedReader(
+                new InputStreamReader(clazz.getResourceAsStream(filepath),
+                StandardCharsets.UTF_8)
+        )) {
+            // Collect the read lines before converting back to a Java stream
+            // so that we can ensure that we close the InputStream and prevent leaks
+            return fileReader.lines().collect(Collectors.toList()).stream();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
     public SyllableCounter() {
-        exceptions = getRessourceLines(EXCEPTIONS_PATH)
+        exceptions = getRessourceLines(getClass(), EXCEPTIONS_PATH)
                 .filter(line -> !line.isEmpty() && !line.startsWith("#"))
                 .map(line -> line.split(" "))
                 .peek(fields -> {
@@ -80,11 +83,11 @@ public class SyllableCounter {
                 .collect(Collectors.toMap(
                         fields -> fields[1],
                         fields -> Integer.parseInt(fields[0])));
-        addSyls = getRessourceLines(ADDSYL_PATH)
+        addSyls = getRessourceLines(getClass(), ADDSYL_PATH)
                 .filter(line -> !line.isEmpty() && !line.startsWith("#"))
                 .map(Pattern::compile)
                 .collect(Collectors.toSet());
-        subSyls = getRessourceLines(SUBSYL_PATH)
+        subSyls = getRessourceLines(getClass(), SUBSYL_PATH)
                 .filter(line -> !line.isEmpty() && !line.startsWith("#"))
                 .map(Pattern::compile)
                 .collect(Collectors.toSet());
