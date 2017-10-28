@@ -15,14 +15,9 @@
  */
 package eu.crydee.syllablecounter;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.stream.Stream;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -34,16 +29,6 @@ public class SyllableCounterTest {
             = "/eu/crydee/syllablecounter/english-exceptions.txt",
             TEST_PATH
             = "/eu/crydee/syllablecounter/english-test.txt";
-
-    private Stream<String> getRessourceLines(String filepath) {
-        try {
-            return Files.lines(
-                    Paths.get(getClass().getResource(filepath).toURI()),
-                    StandardCharsets.UTF_8);
-        } catch (URISyntaxException | IOException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
 
     /**
      * Test of count method, of class SyllableCounter.
@@ -74,7 +59,7 @@ public class SyllableCounterTest {
 
     private void testFromFile(String filepath) {
         SyllableCounter sc = new SyllableCounter();
-        getRessourceLines(filepath).filter(line -> !line.isEmpty())
+        sc.getRessourceLines(getClass(), filepath).filter(line -> !line.isEmpty())
                 .filter(line -> !line.startsWith("#"))
                 .forEach(line -> {
                     String[] fields = line.split(" ");
