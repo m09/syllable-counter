@@ -16,8 +16,12 @@ jobs:
     - name: Maven Install
       run: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
     - name: Maven Test
-      run: mvn clean test jacoco:report -B -V
+      run: mvn clean test -B -V
     - name: JaCoCo Report
       run: mvn jacoco:report -B -V
-    - name: Coveralls Report
-      run: mvn coveralls:report -DrepoToken=${{ secrets.COVERALLS_TOKEN }} -B -V
+    - name: Upload coverage to Codecov.io
+      run: >-
+        bash <(curl -s https://codecov.io/bash)
+        -t ${{ secrets.CODECOV_TOKEN }}
+        -B ${{ github.ref }}
+        -f ./target/site/jacoco/jacoco.xml
