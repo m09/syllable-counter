@@ -70,7 +70,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.6.2</version>
+                <version>3.8.1</version>
                 <configuration>
                     <compilerArgument>-Xlint:unchecked</compilerArgument>
                     <source>8</source>
