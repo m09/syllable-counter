@@ -20,4 +20,10 @@ jobs:
     - name: JaCoCo Report
       run: mvn jacoco:report -B -V
     - name: Coveralls Report
-      run: mvn coveralls:report -DrepoToken=${{ secrets.COVERALLS_TOKEN }} -B -V
+      run: >-
+        mvn coveralls:report
+        -DrepoToken=${{ secrets.COVERALLS_TOKEN }}
+        -Dbranch=${{ github.ref }}
+        -B
+        -V
+        && echo ${{ github.ref }}
