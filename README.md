@@ -1,6 +1,6 @@
 Syllable Counter
 ===
-![Build Status](https://github.com/m09/syllable-counter/workflows/ci.yml/badge.svg) [![Maven Central version](https://img.shields.io/maven-central/v/eu.crydee/syllable-counter.svg)](http://search.maven.org/#search|ga|1|a%3A%22syllable-counter%22) [![codecov](https://codecov.io/gh/m09/syllable-counter/branch/master/graph/badge.svg)](https://codecov.io/gh/m09/syllable-counter)
+![Build Status](https://github.com/m09/syllable-counter/workflows/CI/badge.svg) [![Maven Central version](https://img.shields.io/maven-central/v/eu.crydee/syllable-counter.svg)](http://search.maven.org/#search|ga|1|a%3A%22syllable-counter%22) [![codecov](https://codecov.io/gh/m09/syllable-counter/branch/master/graph/badge.svg)](https://codecov.io/gh/m09/syllable-counter)
 
 Uses a fallback method—based on the [NLTK readability plugin][nltk] by
 Thomas Jakobsen <thomj05@student.uia.no> and Thomas Skardal
