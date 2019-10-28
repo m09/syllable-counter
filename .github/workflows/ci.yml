@@ -19,7 +19,7 @@ jobs:
       run: mvn clean test -B -V
     - name: JaCoCo Report
       run: mvn jacoco:report -B -V
-    - name: Upload coverage to Codecov.io
+    - name: Upload coverage to Codecov
       run: >-
         bash <(curl -s https://codecov.io/bash)
         -t ${{ secrets.CODECOV_TOKEN }}
