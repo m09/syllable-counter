@@ -25,10 +25,8 @@ import static org.junit.Assert.assertEquals;
  */
 public class SyllableCounterTest {
 
-    private final static String EXCEPTIONS_PATH
-            = "/eu/crydee/syllablecounter/english-exceptions.txt",
-            TEST_PATH
-            = "/eu/crydee/syllablecounter/english-test.txt";
+    private final static String EXCEPTIONS_PATH = "/eu/crydee/syllablecounter/english-exceptions.txt",
+            TEST_PATH = "/eu/crydee/syllablecounter/english-test.txt";
 
     /**
      * Test of count method, of class SyllableCounter.
@@ -52,6 +50,15 @@ public class SyllableCounterTest {
      * Test of count method, of class SyllableCounter.
      */
     @Test
+    public void testCountEmpty() {
+        System.out.println("count empty");
+        assertEquals(0, new SyllableCounter().count(""));
+    }
+
+    /**
+     * Test of count method, of class SyllableCounter.
+     */
+    @Test
     public void testCountExceptions() {
         System.out.println("count exceptions");
         testFromFile(EXCEPTIONS_PATH);
@@ -59,19 +66,14 @@ public class SyllableCounterTest {
 
     private void testFromFile(String filepath) {
         SyllableCounter sc = new SyllableCounter();
-        sc.getRessourceLines(getClass(), filepath).filter(line -> !line.isEmpty())
-                .filter(line -> !line.startsWith("#"))
+        sc.getRessourceLines(getClass(), filepath).filter(line -> !line.isEmpty()).filter(line -> !line.startsWith("#"))
                 .forEach(line -> {
                     String[] fields = line.split(" ");
                     if (fields.length != 2) {
-                        System.err.println(
-                                "couldn't parse " + filepath + ". Didn't "
-                                + "find 2 fields in one of the non-comment "
-                                + "lines.");
+                        System.err.println("couldn't parse " + filepath + ". Didn't "
+                                + "find 2 fields in one of the non-comment " + "lines.");
                     }
-                    assertEquals(
-                            sc.count(fields[1]),
-                            Integer.parseInt(fields[0]));
+                    assertEquals(sc.count(fields[1]), Integer.parseInt(fields[0]));
                 });
     }
 }
