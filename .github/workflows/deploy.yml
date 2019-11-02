@@ -18,9 +18,11 @@ jobs:
         java-version: 1.8
     - name: Import GPG key
       run: >-
-        gpg
+        echo "${{ secrets.GPG_KEY }}" > key.asc
+        && gpg
         --allow-secret-key-import
-        --import <(echo "${{ secrets.GPG_KEY }}")
+        --import key.asc
+        && rm key.asc
     - name: Test and deploy to OSSRH
       run: >-
         mvn
