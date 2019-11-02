@@ -28,7 +28,8 @@ jobs:
     - name: Test and deploy to OSSRH
       run: >-
         mvn
-        -P release
+        --activate-profiles release
+        --settings <(${{ secrets.MAVEN_SETTINGS_XML }})
         -Dgpg.keyName=${{ secrets.GPG_KEYNAME }}
-        -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+        -Dgpg.passphrase="${{ secrets.GPG_PASSPHRASE }}"
         clean test deploy
