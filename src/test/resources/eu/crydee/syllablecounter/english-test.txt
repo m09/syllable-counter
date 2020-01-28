@@ -22,3 +22,5 @@
 3 heavier
 3 heaviest
 2 crying
+2 saying
+2 ending

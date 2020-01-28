@@ -22,4 +22,4 @@ dnt$
 thm$
 ier$
 iest$
-[^aeiou][aeiouy]ing$
+[aeiouy]ing$
